@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="SistemaEventos.Application/SistemaEventos.Application.csproj" />
+  <Project Path="SistemaEventos.Domain/SistemaEventos.Domain.csproj" />
+  <Project Path="SistemaEventos.Infrastructure/SistemaEventos.Infrastructure.csproj" />
+  <Project Path="SistemaEventos/SistemaEventos.csproj" />
+</Solution>

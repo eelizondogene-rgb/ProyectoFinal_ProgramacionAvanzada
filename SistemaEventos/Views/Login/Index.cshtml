@@ -1,0 +1,90 @@
+﻿@model SistemaEventos.Application.DTOs.LoginDto
+
+@{
+    ViewData["Title"] = "Iniciar sesión";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-4 p-md-5">
+
+                    <h2 class="text-center fw-bold mb-2">
+                        Bienvenido
+                    </h2>
+
+                    <p class="text-center text-muted mb-4">
+                        Inicia sesión para gestionar tus eventos
+                    </p>
+
+                    @if (TempData["Mensaje"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["Mensaje"]
+                        </div>
+                    }
+
+                    <form asp-controller="Login"
+                          asp-action="Index"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Correo"
+                                   class="form-label fw-semibold">
+                                Correo electrónico
+                            </label>
+
+                            <input asp-for="Correo"
+                                   class="form-control"
+                                   placeholder="correo@ejemplo.com" />
+
+                            <span asp-validation-for="Correo"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Contrasena"
+                                   class="form-label fw-semibold">
+                                Contraseña
+                            </label>
+
+                            <input asp-for="Contrasena"
+                                   type="password"
+                                   class="form-control"
+                                   placeholder="Ingresa tu contraseña" />
+
+                            <span asp-validation-for="Contrasena"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-primary w-100 py-2">
+                            Iniciar sesión
+                        </button>
+                    </form>
+
+                    <p class="text-center mt-4 mb-0">
+                        ¿No tienes una cuenta?
+                        <a asp-controller="Login"
+                           asp-action="Registro">
+                            Regístrate aquí
+                        </a>
+                    </p>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
