@@ -1,0 +1,29 @@
+﻿@model SistemaEventos.Application.DTOs.UsuarioDto
+
+@{
+    ViewData["Title"] = "Detalle de usuario";
+}
+
+<div class="container py-4">
+    <h2 class="fw-bold mb-4">Detalle de usuario</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <p><strong>ID:</strong> @Model.Id</p>
+            <p><strong>Nombre:</strong> @Model.Nombre @Model.Apellido</p>
+            <p><strong>Correo:</strong> @Model.Correo</p>
+            <p><strong>Rol:</strong> @Model.Rol</p>
+            <p><strong>Estado:</strong> @(Model.Activo ? "Activo" : "Inactivo")</p>
+            <p>
+                <strong>Fecha de registro:</strong>
+                @Model.FechaRegistro.ToString("dd/MM/yyyy")
+            </p>
+
+            <a asp-controller="Usuario"
+               asp-action="Index"
+               class="btn btn-secondary">
+                Volver al listado
+            </a>
+        </div>
+    </div>
+</div>

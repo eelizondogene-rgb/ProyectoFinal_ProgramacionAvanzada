@@ -1,0 +1,101 @@
+﻿@model List<SistemaEventos.Application.DTOs.UsuarioDto>
+
+@{
+    ViewData["Title"] = "Gestión de usuarios";
+}
+
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold">Gestión de usuarios</h2>
+            <p class="text-muted">
+                Consulta los usuarios registrados en el sistema.
+            </p>
+        </div>
+
+        <span class="badge bg-primary fs-6">
+            Total: @Model.Count
+        </span>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre completo</th>
+                            <th>Correo</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Fecha de registro</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var usuario in Model)
+                        {
+                            <tr>
+                                <td>@usuario.Id</td>
+
+                                <td>
+                                    @usuario.Nombre @usuario.Apellido
+                                </td>
+
+                                <td>@usuario.Correo</td>
+
+                                <td>
+                                    <span class="badge bg-secondary">
+                                        @usuario.Rol
+                                    </span>
+                                </td>
+
+                                <td>
+                                    @if (usuario.Activo)
+                                    {
+                                        <span class="badge bg-success">
+                                            Activo
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">
+                                            Inactivo
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @usuario.FechaRegistro.ToString("dd/MM/yyyy")
+                                </td>
+
+                                <td>
+                                    <a asp-controller="Usuario"
+                                       asp-action="Detalle"
+                                       asp-route-id="@usuario.Id"
+                                       class="btn btn-sm btn-outline-primary">
+                                        Ver detalle
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info text-center">
+                    No hay usuarios registrados.
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
