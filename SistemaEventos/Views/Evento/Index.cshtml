@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "Eventos";
+}
+
+<link rel="stylesheet" href="~/css/evento.css" asp-append-version="true" />
+
+<div class="duenno-page">
+
+    <div class="page-header">
+        <div class="page-header-content">
+            <div>
+                <h1 class="page-title">
+                    <i class="bi bi-people-fill"></i> Eventos
+                </h1>
+                <p class="page-subtitle">Administración de los eventos del sistema</p>
+            </div>
+            <button type="button" class="btn btn-crear" data-bs-toggle="modal" data-bs-target="#modalCrearEvento">
+                <i class="bi bi-plus-lg"></i> Nuevo Evento
+            </button>
+        </div>
+    </div>
+
+    <div class="table-card">
+        <div class="table-card-header">
+            <h2 class="table-card-title">
+                <i class="bi bi-list-ul"></i> Lista de Eventos
+            </h2>
+        </div>
+        <div class="table-responsive">
+            <table id="tblEvento" class="table table-duenno" style="width:100%">
+                <thead>
+                    <tr>
+                        <th style="width:6%"><div class="th-content"><i class="bi bi-hash"></i> Id</div></th>
+                        <th><div class="th-content"><i class="bi bi-person"></i> Nombre</div></th>
+                        <th><div class="th-content"><i class="bi bi-person-vcard"></i> Lugar</div></th>
+                        <th><div class="th-content"><i class="bi bi-person-vcard"></i> Fecha</div></th>
+                        <th style="width:10%"><div class="th-content"><i class="bi bi-calendar3"></i> Capacidad</div></th>
+                        <th style="width:10%"><div class="th-content"><i class="bi bi-calendar3"></i> Estado</div></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    @await Html.PartialAsync("Create", new SistemaEventos.Application.DTOs.EventoDto())
+</div>
+
+@section Scripts {
+    <script src="~/js/evento.js" asp-append-version="true"></script>
+}

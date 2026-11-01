@@ -1,0 +1,50 @@
+﻿@model SistemaEventos.Application.DTOs.EventoDto
+
+<div class="modal fade" id="modalCrearEvento" tabindex="-1" aria-labelledby="modalCrearEventoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered vehicle-modal-dialog">
+        <div class="modal-content vehicle-modal">
+            <form id="formCrearEvento" asp-controller="Evento" asp-action="CrearEvento" method="post">
+                <div class="modal-header vehicle-modal-header">
+                    <div class="vehicle-modal-heading">
+                        <span class="vehicle-modal-icon"><i class="bi bi-person-plus"></i></span>
+                        <div>
+                            <span class="vehicle-modal-eyebrow">NUEVO REGISTRO</span>
+                            <h5 class="modal-title" id="modalCrearEventoLabel">Registrar evento</h5>
+                            <p class="vehicle-modal-subtitle">Ingresa los datos del evento. La fecha debe ser futura.</p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body vehicle-modal-body">
+                    <div class="vehicle-field mb-3">
+                        <label asp-for="Nombre" class="form-label">Nombre</label>
+                        <div class="vehicle-control">
+                            <i class="bi bi-person" aria-hidden="true"></i>
+                            <input asp-for="Nombre" class="form-control" placeholder="Ej. Concierto de rock" autocomplete="off" required />
+                        </div>
+                        <span asp-validation-for="Nombre" class="text-danger"></span>
+                    </div>
+                    <div class="vehicle-field mb-3">
+                        <label asp-for="Descripcion" class="form-label">Descripción</label>
+                        <div class="vehicle-control">
+                            <i class="bi bi-person-vcard" aria-hidden="true"></i>
+                            <input asp-for="Descripcion" class="form-control" placeholder="Ej. Presentación en vivo" autocomplete="off" required />
+                        </div>
+                        <span asp-validation-for="Descripcion" class="text-danger"></span>
+                    </div>
+                    <div class="vehicle-field mb-3">
+                        <label asp-for="Lugar" class="form-label">Lugar</label>
+                        <div class="vehicle-control">
+                            <i class="bi bi-person-vcard" aria-hidden="true"></i>
+                            <input asp-for="Lugar" class="form-control" placeholder="Ej. Estadio Nacional" autocomplete="off" required />
+                        </div>
+                        <span asp-validation-for="Lugar" class="text-danger"></span>
+                </div>
+                <div class="modal-footer vehicle-modal-footer">
+                    <button type="button" class="btn btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-modal-primary" id="btnGuardarEvento"><i class="bi bi-check2"></i> Guardar evento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

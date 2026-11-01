@@ -13,6 +13,7 @@ namespace SistemaEventos.Infrastructure.Datos
         }
 
         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Evento> Eventos { get; set; }
 
         protected override void OnModelCreating(
             ModelBuilder modelBuilder)
@@ -44,6 +45,32 @@ namespace SistemaEventos.Infrastructure.Datos
                 entity.Property(u => u.Rol)
                     .IsRequired()
                     .HasMaxLength(20);
+            });
+
+            modelBuilder.Entity<Evento>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Nombre)
+                    .IsRequired()
+                    .HasMaxLength(150);
+
+                entity.Property(e => e.Descripcion)
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.Lugar)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.FechaEvento);
+
+                entity.Property(e => e.Capacidad)
+                    .IsRequired();
+
+                entity.Property(e => e.PrecioEntrada)
+                    .IsRequired();
+
+                entity.Property(e => e.FechaCreacion);
             });
         }
     }
