@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using SistemaEventos.Domain.Entidades;
+using SistemaEventos.Infrastructure.Datos.Configuraciones;
 
 namespace SistemaEventos.Infrastructure.Datos
 {
@@ -14,6 +15,9 @@ namespace SistemaEventos.Infrastructure.Datos
 
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Evento> Eventos { get; set; }
+        public DbSet<Asiento> Asientos { get; set; }
+        public DbSet<Compra> Compras { get; set; }
+        public DbSet<Boleto> Boletos { get; set; }
 
         protected override void OnModelCreating(
             ModelBuilder modelBuilder)
@@ -72,6 +76,10 @@ namespace SistemaEventos.Infrastructure.Datos
 
                 entity.Property(e => e.FechaCreacion);
             });
+
+            modelBuilder.ApplyConfiguration(new AsientoConfiguracion());
+            modelBuilder.ApplyConfiguration(new CompraConfiguracion());
+            modelBuilder.ApplyConfiguration(new BoletoConfiguracion());
         }
     }
 }
