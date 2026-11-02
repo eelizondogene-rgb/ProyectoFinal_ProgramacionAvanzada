@@ -53,24 +53,31 @@ namespace SistemaEventos.Infrastructure.Datos
 
                 entity.Property(e => e.Nombre)
                     .IsRequired()
-                    .HasMaxLength(150);
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.Descripcion)
-                    .HasMaxLength(500);
+                    .IsRequired()
+                    .HasMaxLength(150);
 
                 entity.Property(e => e.Lugar)
                     .IsRequired()
-                    .HasMaxLength(200);
+                    .HasMaxLength(150);
 
-                entity.Property(e => e.FechaEvento);
+                entity.Property(e => e.FechaEvento)
+                    .IsRequired()
+                    .HasMaxLength(150);
 
                 entity.Property(e => e.Capacidad)
-                    .IsRequired();
+                    .IsRequired()
+                    .HasMaxLength(150);
 
                 entity.Property(e => e.PrecioEntrada)
-                    .IsRequired();
-
-                entity.Property(e => e.FechaCreacion);
+                    .IsRequired()
+                    .HasMaxLength(150);
+               
+               entity.Property(e => e.FechaCreacion)
+                    .IsRequired()
+                    .HasMaxLength(20);
             });
         }
     }
