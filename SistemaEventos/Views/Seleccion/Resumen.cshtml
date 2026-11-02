@@ -1,0 +1,99 @@
+@model SistemaEventos.Application.DTOs.ResumenSeleccionDto
+
+@{
+    ViewData["Title"] = "Resumen de selección";
+
+    string EtiquetaVisible(string posicion)
+    {
+        if (string.IsNullOrWhiteSpace(posicion))
+        {
+            return string.Empty;
+        }
+
+        var partes = posicion.Split('-');
+
+        if (partes.Length == 2
+            && int.TryParse(partes[0].Trim(), out var fila)
+            && int.TryParse(partes[1].Trim(), out var columna)
+            && fila >= 1
+            && fila <= 10)
+        {
+            return $"{(char)('A' + fila - 1)}{columna}";
+        }
+
+        return posicion;
+    }
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-10">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-4 p-md-5">
+
+                    <p class="text-muted mb-1">Resumen de selección</p>
+                    <h2 class="fw-bold mb-2">@Model.Nombre</h2>
+                    <p class="text-muted mb-4">
+                        Revisa los asientos elegidos. Esta pantalla no confirma una compra ni una reserva.
+                    </p>
+
+                    <h3 class="fs-6 fw-semibold mb-3">Asientos seleccionados</h3>
+
+                    @if (Model.Posiciones.Count == 0)
+                    {
+                        <div class="alert alert-info" role="status">
+                            No hay asientos seleccionados.
+                        </div>
+                    }
+                    else
+                    {
+                        <ul class="list-unstyled d-flex flex-wrap gap-2 mb-4"
+                            aria-label="Asientos seleccionados">
+                            @foreach (var posicion in Model.Posiciones)
+                            {
+                                <li>
+                                    <span class="badge text-bg-primary fs-6">
+                                        @EtiquetaVisible(posicion)
+                                    </span>
+                                </li>
+                            }
+                        </ul>
+                    }
+
+                    <dl class="row mb-4">
+                        <dt class="col-sm-6">Cantidad de entradas</dt>
+                        <dd class="col-sm-6">@Model.Cantidad</dd>
+
+                        <dt class="col-sm-6">Precio por entrada</dt>
+                        <dd class="col-sm-6">@Model.PrecioEntrada</dd>
+
+                        <dt class="col-sm-6">Total estimado</dt>
+                        <dd class="col-sm-6 fw-semibold">@Model.Total</dd>
+                    </dl>
+
+                    <form asp-controller="Seleccion"
+                          asp-action="Index"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" asp-for="EventoId" />
+
+                        @foreach (var posicion in Model.Posiciones)
+                        {
+                            <input type="hidden"
+                                   name="Posiciones"
+                                   value="@posicion" />
+                        }
+
+                        <button type="submit"
+                                class="btn btn-outline-primary w-100 py-2">
+                            Modificar selección
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

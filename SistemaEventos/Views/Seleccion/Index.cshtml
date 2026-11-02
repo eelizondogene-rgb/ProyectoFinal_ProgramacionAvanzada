@@ -1,0 +1,158 @@
+@model SistemaEventos.Application.DTOs.MapaAsientosDto
+
+@{
+    ViewData["Title"] = "Selección de asientos";
+
+    var columnas = Model.Asientos
+        .Select(a => a.Columna)
+        .Distinct()
+        .OrderBy(c => c)
+        .ToList();
+
+    var filas = Model.Asientos
+        .GroupBy(a => a.Fila)
+        .OrderBy(g => g.Key)
+        .ToList();
+}
+
+<style>
+    .seleccion-mapa {
+        overflow-x: auto;
+    }
+
+    .seleccion-grilla {
+        display: grid;
+        gap: 0.35rem;
+        min-width: 40rem;
+        align-items: stretch;
+    }
+
+    .seleccion-eje {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 2.5rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--bs-secondary-color);
+    }
+
+    .seleccion-celda .btn {
+        width: 100%;
+        min-height: 2.5rem;
+        padding: 0.25rem;
+        font-size: 0.8rem;
+    }
+</style>
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-10">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-4 p-md-5">
+
+                    <h2 class="fw-bold mb-2">@Model.Nombre</h2>
+                    <p class="text-muted mb-4">
+                        Selecciona los asientos y continúa al resumen.
+                    </p>
+
+                    <div class="row mb-4">
+                        <div class="col-sm-6 mb-3 mb-sm-0">
+                            <span class="text-muted">Capacidad</span>
+                            <div class="fw-semibold">@Model.Capacidad</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted">Precio por entrada</span>
+                            <div class="fw-semibold">@Model.PrecioEntrada</div>
+                        </div>
+                    </div>
+
+                    <form asp-controller="Seleccion"
+                          asp-action="Resumen"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" asp-for="EventoId" />
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3"></div>
+
+                        @if (filas.Count == 0)
+                        {
+                            <div class="alert alert-info" role="status">
+                                No hay asientos para mostrar.
+                            </div>
+                        }
+                        else
+                        {
+                            <fieldset>
+                                <legend class="fs-6 fw-semibold mb-3">
+                                    Mapa de asientos
+                                </legend>
+
+                                <div class="seleccion-mapa">
+                                    <div class="seleccion-grilla"
+                                         style="grid-template-columns: auto repeat(@columnas.Count, minmax(2.75rem, 1fr));">
+
+                                        <span class="seleccion-eje" aria-hidden="true"></span>
+
+                                        @foreach (var columna in columnas)
+                                        {
+                                            <span class="seleccion-eje"
+                                                  id="columna-@columna">
+                                                @columna
+                                            </span>
+                                        }
+
+                                        @foreach (var fila in filas)
+                                        {
+                                            var ordenados = fila.OrderBy(a => a.Columna).ToList();
+                                            var primero = ordenados[0];
+                                            var letra = !string.IsNullOrEmpty(primero.Etiqueta)
+                                                && char.IsLetter(primero.Etiqueta[0])
+                                                ? char.ToUpperInvariant(primero.Etiqueta[0]).ToString()
+                                                : primero.Fila.ToString();
+
+                                            <span class="seleccion-eje"
+                                                  id="fila-@primero.Fila">
+                                                @letra
+                                            </span>
+
+                                            @foreach (var asiento in ordenados)
+                                            {
+                                                var identificador = $"asiento-{asiento.Fila}-{asiento.Columna}";
+
+                                                <div class="seleccion-celda">
+                                                    <input type="checkbox"
+                                                           class="btn-check"
+                                                           name="Posiciones"
+                                                           id="@identificador"
+                                                           value="@($"{asiento.Fila}-{asiento.Columna}")"
+                                                           autocomplete="off"
+                                                           aria-label="Asiento @asiento.Etiqueta"
+                                                           aria-describedby="fila-@asiento.Fila columna-@asiento.Columna"
+                                                           @(asiento.Seleccionado ? "checked" : null) />
+                                                    <label class="btn btn-outline-primary"
+                                                           for="@identificador">
+                                                        @asiento.Etiqueta
+                                                    </label>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </fieldset>
+                        }
+
+                        <button type="submit"
+                                class="btn btn-primary w-100 py-2 mt-4">
+                            Continuar al resumen
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
