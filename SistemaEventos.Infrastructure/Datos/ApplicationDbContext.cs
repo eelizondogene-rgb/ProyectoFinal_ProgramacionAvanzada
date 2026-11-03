@@ -67,21 +67,15 @@ namespace SistemaEventos.Infrastructure.Datos
                     .IsRequired()
                     .HasMaxLength(150);
 
-                entity.Property(e => e.FechaEvento)
-                    .IsRequired()
-                    .HasMaxLength(150);
+                entity.Property(e => e.FechaEvento);
 
                 entity.Property(e => e.Capacidad)
-                    .IsRequired()
-                    .HasMaxLength(150);
+                    .IsRequired();
 
                 entity.Property(e => e.PrecioEntrada)
-                    .IsRequired()
-                    .HasMaxLength(150);
-               
-               entity.Property(e => e.FechaCreacion)
-                    .IsRequired()
-                    .HasMaxLength(20);
+                    .IsRequired();
+
+                entity.Property(e => e.FechaCreacion);
             });
 
             modelBuilder.ApplyConfiguration(new AsientoConfiguracion());
