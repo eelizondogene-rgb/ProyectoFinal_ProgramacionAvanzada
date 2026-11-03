@@ -1,4 +1,24 @@
-﻿IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+﻿
+-- ============================================================
+-- SISTEMAEVENTOS - CREACIÓN DE BASE DE DATOS
+-- ============================================================
+
+-- Crear la base de datos únicamente si no existe
+IF DB_ID(N'BD_SistemaEventos') IS NULL
+BEGIN
+    CREATE DATABASE [BD_SistemaEventos];
+END;
+GO
+
+-- Seleccionar la base de datos para ejecutar las migraciones
+USE [BD_SistemaEventos];
+GO
+
+-- ============================================================
+-- MIGRACIONES DE ENTITY FRAMEWORK CORE
+-- ============================================================
+
+IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
 BEGIN
     CREATE TABLE [__EFMigrationsHistory] (
         [MigrationId] nvarchar(150) NOT NULL,
@@ -175,4 +195,3 @@ END;
 
 COMMIT;
 GO
-
