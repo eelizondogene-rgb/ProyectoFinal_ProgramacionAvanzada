@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SistemaEventos.Application.Interfaces;
+using SistemaEventos.Application.Mapping;
 using SistemaEventos.Application.Servicios;
 using SistemaEventos.Domain.Entidades;
 using SistemaEventos.Infrastructure.Datos;
@@ -21,7 +22,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Repositorios y servicios
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioServicio, UsuarioServicio>();
+builder.Services.AddScoped<IEventoRepository, EventoRepository>();
+builder.Services.AddScoped<IEventoServicio, EventoServicio>();
 builder.Services.AddScoped<ISeleccionAsientosServicio, SeleccionAsientosServicio>();
+
+builder.Services.AddAutoMapper(cfg => { }, typeof(MapeoClases));
 
 // Protección de contraseñas
 builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();

@@ -22,6 +22,129 @@ namespace SistemaEventos.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("SistemaEventos.Domain.Entidades.Asiento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Columna")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EventoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Fila")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventoId", "Fila", "Columna")
+                        .IsUnique();
+
+                    b.ToTable("Asientos");
+                });
+
+            modelBuilder.Entity("SistemaEventos.Domain.Entidades.Boleto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AsientoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CompraId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EventoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AsientoId")
+                        .IsUnique();
+
+                    b.HasIndex("AsientoId", "EventoId");
+
+                    b.HasIndex("CompraId", "EventoId");
+
+                    b.ToTable("Boletos");
+                });
+
+            modelBuilder.Entity("SistemaEventos.Domain.Entidades.Compra", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EventoId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Total")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Compras");
+                });
+
+            modelBuilder.Entity("SistemaEventos.Domain.Entidades.Evento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Capacidad")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<DateTime?>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaEvento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Lugar")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("PrecioEntrada")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Eventos");
+                });
+
             modelBuilder.Entity("SistemaEventos.Domain.Entidades.Usuario", b =>
                 {
                     b.Property<int>("Id")
@@ -66,6 +189,62 @@ namespace SistemaEventos.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Usuarios");
+                });
+
+            modelBuilder.Entity("SistemaEventos.Domain.Entidades.Asiento", b =>
+                {
+                    b.HasOne("SistemaEventos.Domain.Entidades.Evento", "Evento")
+                        .WithMany()
+                        .HasForeignKey("EventoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Evento");
+                });
+
+            modelBuilder.Entity("SistemaEventos.Domain.Entidades.Boleto", b =>
+                {
+                    b.HasOne("SistemaEventos.Domain.Entidades.Asiento", "Asiento")
+                        .WithMany()
+                        .HasForeignKey("AsientoId", "EventoId")
+                        .HasPrincipalKey("Id", "EventoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SistemaEventos.Domain.Entidades.Compra", "Compra")
+                        .WithMany("Boletos")
+                        .HasForeignKey("CompraId", "EventoId")
+                        .HasPrincipalKey("Id", "EventoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Asiento");
+
+                    b.Navigation("Compra");
+                });
+
+            modelBuilder.Entity("SistemaEventos.Domain.Entidades.Compra", b =>
+                {
+                    b.HasOne("SistemaEventos.Domain.Entidades.Evento", "Evento")
+                        .WithMany()
+                        .HasForeignKey("EventoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SistemaEventos.Domain.Entidades.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Evento");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("SistemaEventos.Domain.Entidades.Compra", b =>
+                {
+                    b.Navigation("Boletos");
                 });
 #pragma warning restore 612, 618
         }
