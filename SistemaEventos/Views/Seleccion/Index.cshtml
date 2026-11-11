@@ -43,6 +43,48 @@
         padding: 0.25rem;
         font-size: 0.8rem;
     }
+
+    .seleccion-leyenda {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem 1.5rem;
+    }
+
+    .seleccion-muestra {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 2.75rem;
+        min-height: 2rem;
+        margin-right: 0.4rem;
+        border-radius: 0.375rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .seleccion-muestra-disponible {
+        color: var(--bs-primary);
+        background: transparent;
+        border: 1px solid var(--bs-primary);
+    }
+
+    .seleccion-muestra-seleccionado {
+        color: #fff;
+        background: var(--bs-primary);
+        border: 1px solid var(--bs-primary);
+    }
+
+    .seleccion-muestra-ocupado,
+    .seleccion-ocupado .seleccion-asiento-ocupado {
+        color: #fff;
+        background: #6c757d;
+        border: 1px solid #6c757d;
+        cursor: not-allowed;
+    }
+
+    .seleccion-ocupado .seleccion-asiento-ocupado {
+        pointer-events: none;
+    }
 </style>
 
 <div class="container py-4">
@@ -67,7 +109,8 @@
                         </div>
                     </div>
 
-                    <form asp-controller="Seleccion"
+                    <form id="formSeleccionMapa"
+                          asp-controller="Seleccion"
                           asp-action="Resumen"
                           method="post">
 
@@ -90,6 +133,25 @@
                                 <legend class="fs-6 fw-semibold mb-3">
                                     Mapa de asientos
                                 </legend>
+
+                                <ul class="seleccion-leyenda list-unstyled mb-3"
+                                    aria-label="Leyenda del mapa">
+                                    <li>
+                                        <span class="seleccion-muestra seleccion-muestra-disponible"
+                                              aria-hidden="true">A1</span>
+                                        Disponible
+                                    </li>
+                                    <li>
+                                        <span class="seleccion-muestra seleccion-muestra-seleccionado"
+                                              aria-hidden="true">A1</span>
+                                        Seleccionado
+                                    </li>
+                                    <li>
+                                        <span class="seleccion-muestra seleccion-muestra-ocupado"
+                                              aria-hidden="true">A1</span>
+                                        Ocupado
+                                    </li>
+                                </ul>
 
                                 <div class="seleccion-mapa">
                                     <div class="seleccion-grilla"
@@ -122,21 +184,34 @@
                                             @foreach (var asiento in ordenados)
                                             {
                                                 var identificador = $"asiento-{asiento.Fila}-{asiento.Columna}";
+                                                var seleccionado = asiento.Seleccionado && !asiento.Ocupado;
 
-                                                <div class="seleccion-celda">
-                                                    <input type="checkbox"
-                                                           class="btn-check"
-                                                           name="Posiciones"
-                                                           id="@identificador"
-                                                           value="@($"{asiento.Fila}-{asiento.Columna}")"
-                                                           autocomplete="off"
-                                                           aria-label="Asiento @asiento.Etiqueta"
-                                                           aria-describedby="fila-@asiento.Fila columna-@asiento.Columna"
-                                                           @(asiento.Seleccionado ? "checked" : null) />
-                                                    <label class="btn btn-outline-primary"
-                                                           for="@identificador">
-                                                        @asiento.Etiqueta
-                                                    </label>
+                                                <div class="seleccion-celda @(asiento.Ocupado ? "seleccion-ocupado" : null)">
+                                                    @if (asiento.Ocupado)
+                                                    {
+                                                        <span class="btn seleccion-asiento-ocupado"
+                                                              aria-disabled="true"
+                                                              aria-label="Asiento @asiento.Etiqueta ocupado"
+                                                              title="Ocupado">
+                                                            @asiento.Etiqueta
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <input type="checkbox"
+                                                               class="btn-check"
+                                                               name="Posiciones"
+                                                               id="@identificador"
+                                                               value="@($"{asiento.Fila}-{asiento.Columna}")"
+                                                               autocomplete="off"
+                                                               aria-label="Asiento @asiento.Etiqueta"
+                                                               aria-describedby="fila-@asiento.Fila columna-@asiento.Columna"
+                                                               @(seleccionado ? "checked" : null) />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="@identificador">
+                                                            @asiento.Etiqueta
+                                                        </label>
+                                                    }
                                                 </div>
                                             }
                                         }
@@ -156,3 +231,53 @@
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        var formulario = document.getElementById('formSeleccionMapa');
+
+        if (!formulario) {
+            return;
+        }
+
+        var retirarOcupado = function (origen) {
+            var celda = origen && origen.closest
+                ? origen.closest('.seleccion-ocupado')
+                : null;
+
+            if (!celda) {
+                return false;
+            }
+
+            celda.querySelectorAll('input').forEach(function (entrada) {
+                entrada.checked = false;
+                entrada.disabled = true;
+                entrada.removeAttribute('name');
+            });
+
+            return true;
+        };
+
+        formulario.addEventListener('click', function (evento) {
+            if (retirarOcupado(evento.target)) {
+                evento.preventDefault();
+                evento.stopPropagation();
+            }
+        }, true);
+
+        formulario.addEventListener('change', function (evento) {
+            if (retirarOcupado(evento.target)) {
+                evento.preventDefault();
+                evento.stopPropagation();
+            }
+        }, true);
+
+        formulario.addEventListener('submit', function () {
+            formulario.querySelectorAll('.seleccion-ocupado input').forEach(function (entrada) {
+                entrada.checked = false;
+                entrada.disabled = true;
+                entrada.removeAttribute('name');
+            });
+        });
+    })();
+</script>

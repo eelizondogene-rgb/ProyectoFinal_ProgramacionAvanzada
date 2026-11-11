@@ -25,6 +25,8 @@ builder.Services.AddScoped<IUsuarioServicio, UsuarioServicio>();
 builder.Services.AddScoped<IEventoRepository, EventoRepository>();
 builder.Services.AddScoped<IEventoServicio, EventoServicio>();
 builder.Services.AddScoped<ISeleccionAsientosServicio, SeleccionAsientosServicio>();
+builder.Services.AddScoped<ICompraRepository, CompraRepository>();
+builder.Services.AddScoped<ICompraServicio, CompraServicio>();
 
 builder.Services.AddAutoMapper(cfg => { }, typeof(MapeoClases));
 

@@ -10,10 +10,14 @@ namespace SistemaEventos.Application.Servicios
         private const int MaximoAsientos = Filas * Columnas;
 
         private readonly IEventoServicio _eventoServicio;
+        private readonly ICompraRepository _compraRepository;
 
-        public SeleccionAsientosServicio(IEventoServicio eventoServicio)
+        public SeleccionAsientosServicio(
+            IEventoServicio eventoServicio,
+            ICompraRepository compraRepository)
         {
             _eventoServicio = eventoServicio;
+            _compraRepository = compraRepository;
         }
 
         public async Task<Respuesta<MapaAsientosDto>> ObtenerMapaAsync(
@@ -33,7 +37,18 @@ namespace SistemaEventos.Application.Servicios
                 return preparacion.Error;
             }
 
-            return Exito(CrearMapa(preparacion.Evento!, preparacion.Coordenadas!));
+            var vendidos = await _compraRepository.ObtenerAsientosVendidosAsync(
+                preparacion.Evento!.Id,
+                cancellationToken);
+
+            var ocupados = vendidos
+                .Select(asiento => new Coordenada(asiento.Fila, asiento.Columna))
+                .ToHashSet();
+
+            return Exito(CrearMapa(
+                preparacion.Evento!,
+                preparacion.Coordenadas!,
+                ocupados));
         }
 
         public async Task<Respuesta<ResumenSeleccionDto>> ResumirSeleccionAsync(
@@ -160,7 +175,8 @@ namespace SistemaEventos.Application.Servicios
 
         private static MapaAsientosDto CrearMapa(
             EventoDto evento,
-            IReadOnlyCollection<Coordenada> seleccionadas)
+            IReadOnlyCollection<Coordenada> seleccionadas,
+            IReadOnlySet<Coordenada> ocupados)
         {
             var marcadas = seleccionadas.ToHashSet();
             var asientos = new List<AsientoDisponibleDto>(MaximoAsientos);
@@ -176,7 +192,8 @@ namespace SistemaEventos.Application.Servicios
                         Fila = fila,
                         Columna = columna,
                         Etiqueta = CrearEtiqueta(coordenada),
-                        Seleccionado = marcadas.Contains(coordenada)
+                        Seleccionado = marcadas.Contains(coordenada),
+                        Ocupado = ocupados.Contains(coordenada)
                     });
                 }
             }
