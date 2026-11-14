@@ -34,7 +34,8 @@
                     <p class="text-muted mb-1">Resumen de selección</p>
                     <h2 class="fw-bold mb-2">@Model.Nombre</h2>
                     <p class="text-muted mb-4">
-                        Revisa los asientos elegidos. Esta pantalla no confirma una compra ni una reserva.
+                        Revisa los asientos elegidos. Confirmar compra guarda estos boletos en el sistema.
+                        Si no has iniciado sesión, el sistema pedirá entrar antes de registrarlos.
                     </p>
 
                     <h3 class="fs-6 fw-semibold mb-3">Asientos seleccionados</h3>
@@ -71,6 +72,34 @@
                         <dd class="col-sm-6 fw-semibold">@Model.Total</dd>
                     </dl>
 
+                    <div class="alert alert-info" role="status">
+                        El botón Confirmar compra registra los boletos de los asientos mostrados.
+                        El precio, las posiciones y la disponibilidad se vuelven a comprobar en el servidor.
+                    </div>
+
+                    <form id="formConfirmarCompra"
+                          asp-controller="Seleccion"
+                          asp-action="Confirmar"
+                          method="post"
+                          class="mb-3">
+
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" asp-for="EventoId" />
+
+                        @foreach (var posicion in Model.Posiciones)
+                        {
+                            <input type="hidden"
+                                   name="Posiciones"
+                                   value="@posicion" />
+                        }
+
+                        <button type="submit"
+                                class="btn btn-primary w-100 py-2">
+                            Confirmar compra
+                        </button>
+                    </form>
+
                     <form asp-controller="Seleccion"
                           asp-action="Index"
                           method="post">
@@ -97,3 +126,35 @@
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        var formulario = document.getElementById('formConfirmarCompra');
+
+        if (!formulario) {
+            return;
+        }
+
+        formulario.addEventListener('submit', function (evento) {
+            if (formulario.dataset.enviado === '1') {
+                evento.preventDefault();
+                return;
+            }
+
+            if (typeof formulario.checkValidity === 'function'
+                && !formulario.checkValidity()) {
+                return;
+            }
+
+            formulario.dataset.enviado = '1';
+
+            window.setTimeout(function () {
+                var boton = formulario.querySelector('button[type="submit"]');
+
+                if (boton) {
+                    boton.disabled = true;
+                }
+            }, 0);
+        });
+    })();
+</script>

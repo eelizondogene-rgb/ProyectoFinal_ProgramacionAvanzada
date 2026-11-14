@@ -9,5 +9,7 @@ namespace SistemaEventos.Application.DTOs
         public string Etiqueta { get; set; } = string.Empty;
 
         public bool Seleccionado { get; set; }
+
+        public bool Ocupado { get; set; }
     }
 }
