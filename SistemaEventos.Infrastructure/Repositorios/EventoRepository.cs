@@ -9,7 +9,7 @@ namespace SistemaEventos.Infrastructure.Repositorios
     {
         private readonly ApplicationDbContext _context;
 
-        public EventoRepository(ApplicationDbContext context) 
+        public EventoRepository(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -23,7 +23,7 @@ namespace SistemaEventos.Infrastructure.Repositorios
         }
 
         public async Task<Evento?> GetEventoByIdAsync(
-            int id, 
+            int id,
             CancellationToken cancellationToken = default)
         {
             return await _context.Eventos
@@ -32,7 +32,7 @@ namespace SistemaEventos.Infrastructure.Repositorios
         }
 
         public async Task<bool> CreateEventoAsync(
-            Evento evento, 
+            Evento evento,
             CancellationToken cancellationToken = default)
         {
 
@@ -41,7 +41,7 @@ namespace SistemaEventos.Infrastructure.Repositorios
         }
 
         public async Task<bool> UpdateEventoAsync(
-            Evento evento, 
+            Evento evento,
             CancellationToken cancellationToken = default)
         {
             var eventoExistente = await _context.Eventos
@@ -53,12 +53,17 @@ namespace SistemaEventos.Infrastructure.Repositorios
             }
 
             eventoExistente.Nombre = evento.Nombre;
+            eventoExistente.Descripcion = evento.Descripcion;
+            eventoExistente.Lugar = evento.Lugar;
+            eventoExistente.FechaEvento = evento.FechaEvento;
+            eventoExistente.Capacidad = evento.Capacidad;
+            eventoExistente.PrecioEntrada = evento.PrecioEntrada;
 
             return await _context.SaveChangesAsync(cancellationToken) > 0;
         }
 
         public async Task<bool> DeleteEventoAsync(
-            int id, 
+            int id,
             CancellationToken cancellationToken = default)
         {
             var evento = await _context.Eventos
@@ -66,7 +71,7 @@ namespace SistemaEventos.Infrastructure.Repositorios
 
             if (evento == null)
             {
-                return false; 
+                return false;
             }
 
             _context.Eventos.Remove(evento);

@@ -32,6 +32,30 @@ namespace SistemaEventos.Application.Servicios
             var respuesta = new Respuesta<EventoDto>();
             var eventoEntity = _mapper.Map<Evento>(evento);
 
+            if (!eventoEntity.ValidarReglaNegocioFechaFutura())
+            {
+                respuesta.EsCorrecto = false;
+                respuesta.Mensaje = "La fecha del evento debe ser futura.";
+                respuesta.Codigo = 400;
+                return respuesta;
+            }
+
+            if (!eventoEntity.ValidarReglaNegocioCapacidad())
+            {
+                respuesta.EsCorrecto = false;
+                respuesta.Mensaje = "La capacidad debe estar entre 1 y 100 asientos.";
+                respuesta.Codigo = 400;
+                return respuesta;
+            }
+
+            if (!eventoEntity.ValidarReglaNegocioPrecio())
+            {
+                respuesta.EsCorrecto = false;
+                respuesta.Mensaje = "El precio de la entrada no puede ser negativo.";
+                respuesta.Codigo = 400;
+                return respuesta;
+            }
+
             if (!await _eventoRepository.CreateEventoAsync(eventoEntity, cancellationToken))
             {
                 respuesta.EsCorrecto = false;
@@ -48,6 +72,30 @@ namespace SistemaEventos.Application.Servicios
         {
             var respuesta = new Respuesta<EventoDto>();
             var eventoEntity = _mapper.Map<Evento>(evento);
+
+            if (!eventoEntity.ValidarReglaNegocioFechaFutura())
+            {
+                respuesta.EsCorrecto = false;
+                respuesta.Mensaje = "La fecha del evento debe ser futura.";
+                respuesta.Codigo = 400;
+                return respuesta;
+            }
+
+            if (!eventoEntity.ValidarReglaNegocioCapacidad())
+            {
+                respuesta.EsCorrecto = false;
+                respuesta.Mensaje = "La capacidad debe estar entre 1 y 100 asientos.";
+                respuesta.Codigo = 400;
+                return respuesta;
+            }
+
+            if (!eventoEntity.ValidarReglaNegocioPrecio())
+            {
+                respuesta.EsCorrecto = false;
+                respuesta.Mensaje = "El precio de la entrada no puede ser negativo.";
+                respuesta.Codigo = 400;
+                return respuesta;
+            }
 
             if (!await _eventoRepository.UpdateEventoAsync(eventoEntity, cancellationToken))
             {
@@ -70,12 +118,9 @@ namespace SistemaEventos.Application.Servicios
                 respuesta.EsCorrecto = false;
                 respuesta.Mensaje = "No se pudo eliminar el evento.";
                 respuesta.Codigo = 500;
-                return respuesta;
             }
 
             return respuesta;
         }
-
-
-        }
     }
+}
