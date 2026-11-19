@@ -5,25 +5,123 @@
 }
 
 <div class="container py-4">
+
     <h2 class="fw-bold mb-4">Detalle de usuario</h2>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Mensaje"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+
             <p><strong>ID:</strong> @Model.Id</p>
             <p><strong>Nombre:</strong> @Model.Nombre @Model.Apellido</p>
             <p><strong>Correo:</strong> @Model.Correo</p>
             <p><strong>Rol:</strong> @Model.Rol</p>
-            <p><strong>Estado:</strong> @(Model.Activo ? "Activo" : "Inactivo")</p>
+
+            <p>
+                <strong>Estado:</strong>
+                @if (Model.Activo)
+                {
+                    <span class="badge bg-success">Activo</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger">Inactivo</span>
+                }
+            </p>
+
             <p>
                 <strong>Fecha de registro:</strong>
                 @Model.FechaRegistro.ToString("dd/MM/yyyy")
             </p>
+
+            <hr />
+
+            <h5 class="fw-bold mb-3">Administrar usuario</h5>
+
+            <div class="d-flex flex-wrap gap-2 mb-4">
+
+                <a asp-controller="Usuario"
+                   asp-action="Editar"
+                   asp-route-id="@Model.Id"
+                   class="btn btn-primary">
+                    Editar información
+                </a>
+
+                <form asp-controller="Usuario"
+                      asp-action="CambiarRol"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden" name="id" value="@Model.Id" />
+
+                    <select name="rol" class="form-select mb-2">
+                        @if (Model.Rol == "Administrador")
+                        {
+                            <option value="Administrador" selected>Administrador</option>
+                            <option value="Cliente">Cliente</option>
+                        }
+                        else
+                        {
+                            <option value="Cliente" selected>Cliente</option>
+                            <option value="Administrador">Administrador</option>
+                        }
+                    </select>
+
+                    <button type="submit"
+                            class="btn btn-warning">
+                        Cambiar rol
+                    </button>
+                </form>
+
+                <form asp-controller="Usuario"
+                      asp-action="CambiarEstado"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden"
+                           name="activo"
+                           value="@(!Model.Activo)" />
+
+                    @if (Model.Activo)
+                    {
+                        <button type="submit"
+                                class="btn btn-danger">
+                            Desactivar usuario
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="submit"
+                                class="btn btn-success">
+                            Activar usuario
+                        </button>
+                    }
+                </form>
+
+            </div>
 
             <a asp-controller="Usuario"
                asp-action="Index"
                class="btn btn-secondary">
                 Volver al listado
             </a>
+
         </div>
     </div>
 </div>

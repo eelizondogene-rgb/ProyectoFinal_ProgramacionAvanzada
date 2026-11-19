@@ -12,5 +12,11 @@ namespace SistemaEventos.Application.Interfaces
         Task<UsuarioDto?> RegistrarAsync(RegistroUsuarioDto registro);
 
         Task<UsuarioDto?> ValidarCredencialesAsync(LoginDto login);
+
+        Task<bool> ActualizarAsync(int id, ActualizarUsuarioDto usuario);
+
+        Task<bool> CambiarRolAsync(int id, string rol);
+
+        Task<bool> CambiarEstadoAsync(int id, bool activo);
     }
 }

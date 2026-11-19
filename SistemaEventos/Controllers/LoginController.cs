@@ -117,6 +117,7 @@ namespace SistemaEventos.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult AccesoDenegado()
         {
             return View();
