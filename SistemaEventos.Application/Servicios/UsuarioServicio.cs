@@ -116,6 +116,7 @@ namespace SistemaEventos.Application.Servicios
             return true;
         }
 
+
         public async Task<bool> CambiarRolAsync(int id, string rol)
         {
             if (rol != "Administrador" && rol != "Cliente")
@@ -126,12 +127,25 @@ namespace SistemaEventos.Application.Servicios
             if (usuario == null)
                 return false;
 
+            if (usuario.Rol == "Administrador" &&
+                usuario.Activo &&
+                rol == "Cliente")
+            {
+                var administradoresActivos = (await _repository.ObtenerTodosAsync())
+                    .Count(u => u.Rol == "Administrador" && u.Activo);
+
+                if (administradoresActivos <= 1)
+                    return false;
+            }
+
             usuario.Rol = rol;
 
             await _repository.ActualizarAsync(usuario);
 
             return true;
         }
+
+
 
         public async Task<bool> CambiarEstadoAsync(int id, bool activo)
         {
@@ -140,12 +154,24 @@ namespace SistemaEventos.Application.Servicios
             if (usuario == null)
                 return false;
 
+            if (usuario.Rol == "Administrador" &&
+                usuario.Activo &&
+                !activo)
+            {
+                var administradoresActivos = (await _repository.ObtenerTodosAsync())
+                    .Count(u => u.Rol == "Administrador" && u.Activo);
+
+                if (administradoresActivos <= 1)
+                    return false;
+            }
+
             usuario.Activo = activo;
 
             await _repository.ActualizarAsync(usuario);
 
             return true;
         }
+
 
         private static UsuarioDto MapearDto(Usuario usuario)
         {
