@@ -8,6 +8,7 @@ using SistemaEventos.Application.Servicios;
 using SistemaEventos.Domain.Entidades;
 using SistemaEventos.Infrastructure.Datos;
 using SistemaEventos.Infrastructure.Repositorios;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +50,20 @@ builder.Services
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+// Crear administrador inicial si no existe
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider
+        .GetRequiredService<ApplicationDbContext>();
+
+    var passwordHasher = scope.ServiceProvider
+        .GetRequiredService<IPasswordHasher<Usuario>>();
+
+    await SistemaEventos.CrearAdministrador.EjecutarAsync(
+        context,
+        passwordHasher
+    );
+}
 
 // Manejo de errores
 if (!app.Environment.IsDevelopment())
